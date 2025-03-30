@@ -9,6 +9,7 @@ use App\Models\Hall;
 use App\Models\Seat;
 use App\Models\Price;
 use App\Models\HallSchema;
+use Carbon\Carbon;
 
 class FilmSessionController extends Controller {
     public function getSessionInfo($session_id) {
@@ -134,5 +135,50 @@ class FilmSessionController extends Controller {
                 : 'Ticket sales deactivated for all sessions.',
             'status' => $activeStatus,
         ]);
+    }
+
+    public function getAvailableStartTimes(Request $request)
+    {
+        $request->validate([
+            'film_id' => 'required|exists:films,id',
+            'hall_id' => 'required|exists:halls,id',
+            'date' => 'required|date',
+        ]);
+
+        $hallId = $request->hall_id;
+        $date = $request->date;
+
+        //hall working hours
+        $hallOpeningTime = Carbon::createFromTime(9, 0);  // Example: 9:00 AM
+        $hallClosingTime = Carbon::createFromTime(23, 0); // Example: 11:00 PM
+
+        //all existing sessions for that hall and date
+        $sessions = FilmSession::where('hall_id', $hallId)
+            ->where('date', $date)
+            ->orderBy('start_time')
+            ->get();
+
+        $availableTimes = [];
+        $currentTime = $hallOpeningTime;
+
+        while ($currentTime->addHour()->lessThanOrEqualTo($hallClosingTime)) {
+            $isSlotAvailable = true;
+
+            foreach ($sessions as $session) {
+                $sessionStart = Carbon::parse($session->start_time);
+                $sessionEnd = $sessionStart->copy()->addMinutes($session->film->duration);
+
+                if ($currentTime->between($sessionStart, $sessionEnd)) {
+                    $isSlotAvailable = false;
+                    break;
+                }
+            }
+
+            if ($isSlotAvailable) {
+                $availableTimes[] = $currentTime->format('H:i');
+            }
+        }
+
+        return response()->json(['available_times' => $availableTimes]);
     }
 }

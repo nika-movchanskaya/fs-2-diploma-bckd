@@ -37,6 +37,8 @@ Route::get('/admin/sessions', [FilmSessionController::class, 'getSessionsByDay']
 Route::post('/admin/session', [FilmSessionController::class, 'create']);
 Route::patch('/admin/sessions/toggle-sale', [FilmSessionController::class, 'togglesale']);
 
+Route::get('/admin/available-start-times', [FilmSessionController::class, 'getAvailableStartTimes']);
+
 //auth
 Route::post('register', [RegisteredUserController::class, 'store']);
 Route::post('login', [AuthenticatedSessionController::class, 'store']);

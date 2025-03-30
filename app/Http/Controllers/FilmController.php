@@ -14,7 +14,7 @@ class FilmController extends Controller {
             return response()->json(['error' => 'Day parameter is required'], 400);
         }
 
-        // Get distinct film IDs for the given day
+        //get distinct film IDs for the given day
         $filmIds = DB::table('film_sessions')
             ->where('status', 'active')
             ->whereDate('date', $day)
@@ -25,7 +25,7 @@ class FilmController extends Controller {
             return response()->json([]);
         }
 
-        // Get all films with halls and times for the given day
+        //get all films with halls and times for the given day
         $films = DB::table('films')
             ->whereIn('id', $filmIds)
             ->get()
@@ -70,15 +70,17 @@ class FilmController extends Controller {
             'description' => 'required|string',
             'origin' => 'required|string|max:255',
             'duration' => 'required|integer|min:1',
-            'image' => 'nullable|string',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+
+        $imagePath = $request->file('image')->store('films_img', 'public');
 
         $film = Film::create([
             'name' => $validated['name'],
             'description' => $validated['description'],
             'origin' => $validated['origin'],
             'duration' => $validated['duration'],
-            'image' => $validated['image'] ?? null,
+            'image' => $imagePath,
         ]);
 
         return response()->json($film, 201);
