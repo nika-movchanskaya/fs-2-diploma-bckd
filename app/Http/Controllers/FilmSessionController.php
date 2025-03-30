@@ -149,8 +149,8 @@ class FilmSessionController extends Controller {
         $date = $request->date;
 
         //hall working hours
-        $hallOpeningTime = Carbon::createFromTime(9, 0);  // Example: 9:00 AM
-        $hallClosingTime = Carbon::createFromTime(23, 0); // Example: 11:00 PM
+        $hallOpeningTime = Carbon::createFromTime(9, 0);
+        $hallClosingTime = Carbon::createFromTime(23, 0);
 
         //all existing sessions for that hall and date
         $sessions = FilmSession::where('hall_id', $hallId)
