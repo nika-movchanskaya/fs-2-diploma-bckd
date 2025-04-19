@@ -20,7 +20,7 @@ class HallSchemaSeeder extends Seeder
                     'hall_id' => 1,
                     'index_x' => $x,
                     'index_y' => $y,
-                    'status' => $y <= 2 ? 'regular' : 'vip',
+                    'status' => $y <= 2 ? 'vip' : 'regular',
                 ]);
             }
         }
@@ -29,10 +29,10 @@ class HallSchemaSeeder extends Seeder
         for ($y = 1; $y <= 18; $y++) {
             for ($x = 1; $x <= 12; $x++) {
                 HallSchema::create([
-                    'hall_id' => 1,
+                    'hall_id' => 2,
                     'index_x' => $x,
                     'index_y' => $y,
-                    'status' => $y <= 4 ? 'regular' : 'vip',
+                    'status' => $y <= 4 ? 'vip' : 'regular',
                 ]);
             }
         }
